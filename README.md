@@ -1,8 +1,8 @@
-# nfhandshake
+# ViaNeoForge
 
 > 用 **Fabric 客户端**连接 **NeoForge 服务端**的握手适配 mod（协议层研究项目）。
 
-[![Build](https://github.com/OWNER/REPO/actions/workflows/build.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/build.yml)
+[![Build](https://github.com/OWNER/vianeoforge/actions/workflows/build.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/build.yml)
 
 ---
 

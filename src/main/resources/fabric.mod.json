@@ -2,9 +2,9 @@
 	"schemaVersion": 1,
 	"id": "nfhandshake",
 	"version": "${version}",
-	"name": "NeoForge Handshake Adapter",
-	"description": "配置阶段握手适配 + 非 minecraft 命名空间数据包静默丢弃，用于 Fabric 客户端经 ViaFabricPlus 连接 NeoForge 服务器。",
-	"authors": ["Fab-Neo"],
+	"name": "ViaNeoForge",
+	"description": "让 Fabric 客户端经 ViaFabricPlus 通过 NeoForge 服务端握手协商：自动探测通道清单、补齐配置阶段全部请求应答、注册表同步四层容错。协议层研究项目。",
+	"authors": ["fabneo"],
 	"license": "MIT",
 	"environment": "client",
 	"entrypoints": {
