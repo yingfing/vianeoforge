@@ -76,15 +76,15 @@ set JAVA_HOME=F:\java\java25            # Windows
 
 gradle build -x test
 # 产物：build/libs/nfhandshake-1.0.0.jar
-
-# 另一个工程（游戏内调试命令桥）
-cd mcpmod && gradle build -x test
 ```
 
 ### 自动构建
 
-推送到 GitHub 后，`.github/workflows/build.yml` 会自动构建两个 mod，
+推送到 GitHub 后，`.github/workflows/build.yml` 会自动构建，
 产物可在该次运行的 **Actions 页面底部**下载（Artifacts）。
+
+> 游戏内调试命令桥 **MCPMod** 已拆分为独立项目：
+> [vianeoforge-mcpmod](https://github.com/yingfing/vianeoforge-mcpmod)
 
 ---
 
@@ -210,9 +210,12 @@ src/main/java/net/fabneo/nfhandshake/
     ├── MappedRegistryMixin.java              # 层2：重复键
     ├── RegistryDataLoaderMixin.java          # 层3：元素解析失败
     └── TimelineRegistryFallbackMixin.java    # 层4：未绑定时间线
-
-mcpmod/                                        # 游戏内实时命令桥（调试用）
 ```
+
+### 相关项目
+
+- [vianeoforge-mcpmod](https://github.com/yingfing/vianeoforge-mcpmod) ——
+  游戏内实时命令桥（最初为本项目调试而开发，现已独立）
 
 ---
 
