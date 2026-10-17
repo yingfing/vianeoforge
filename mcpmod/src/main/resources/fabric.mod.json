@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "mcpmod",
+  "version": "${version}",
+  "name": "MCP Mod (live command bridge)",
+  "description": "在游戏内运行的实时命令桥：通过本地 HTTP/文件输入文本命令并取回执行结果，改逻辑无需重启客户端。",
+  "authors": ["fabneo"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.fabneo.mcpmod.McpModClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.11",
+    "fabric-api": "*"
+  }
+}

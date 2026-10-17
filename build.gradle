@@ -1,0 +1,70 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+version = project.version
+group = project.group
+base { archivesName = project.archives_base_name }
+
+repositories {
+	maven { name = 'AliyunPublic'; url = 'https://maven.aliyun.com/repository/public' }
+	maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+	maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven/' }
+	mavenCentral()
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	// 用 Mojang 官方映射 —— 本机 ref\client-1.21.11-mojmap.txt 即由此而来
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// ViaFabricPlus：版本翻译，使 1.21.11 客户端能连 1.21.1 服务器
+	// 仅运行时需要；测试端 = fabric-api + vf+ + nfhandshake（最小硬碰环境）
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archives_base_name}" }
+	}
+}
+
+loom {
+	runs {
+		client {
+			vmArg "-Xmx1536m"
+			vmArg "-XX:+UseSerialGC"
+			// 调试运行用的离线用户名与服务器地址。
+			// 【隐私】不要在仓库里写死真实地址/账号：
+			//   可通过 -Pnf.username=... -Pnf.server=... 覆盖，
+			//   或在 gradle.properties 里配置（该文件已被 .gitignore 排除）。
+			programArg "--username"
+			programArg(project.findProperty("nf.username") ?: "Player")
+			// 仅当显式提供了服务器地址时才启用 Quick Play 自动连接
+			def devServer = project.findProperty("nf.server")
+			if (devServer) {
+				programArg "--quickPlayMultiplayer"
+				programArg devServer.toString()
+			}
+		}
+	}
+}

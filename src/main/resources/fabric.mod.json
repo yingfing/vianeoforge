@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "nfhandshake",
+	"version": "${version}",
+	"name": "NeoForge Handshake Adapter",
+	"description": "配置阶段握手适配 + 非 minecraft 命名空间数据包静默丢弃，用于 Fabric 客户端经 ViaFabricPlus 连接 NeoForge 服务器。",
+	"authors": ["Fab-Neo"],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["net.fabneo.nfhandshake.NfHandshakeClient"]
+	},
+	"mixins": [
+		{
+			"config": "nfhandshake.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

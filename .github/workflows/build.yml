@@ -1,0 +1,92 @@
+name: Build
+
+# ============================================================
+# 自动构建：推送代码 / 提 PR / 打标签时自动编译两个 mod
+# ============================================================
+# 产物：
+#   nfhandshake-<版本>.jar  —— 主 mod（NeoForge 握手适配）
+#   mcpmod-<版本>.jar       —— 游戏内实时命令桥（调试用）
+#
+# 触发条件：
+#   push        —— 任意分支推送
+#   pull_request—— 向主分支提 PR
+#   workflow_dispatch —— 手动触发（可在 Actions 页面点按钮）
+#   release     —— 发布 Release 时自动附上 jar
+# ============================================================
+
+on:
+  push:
+    branches: [ "**" ]
+    paths-ignore:
+      - '**.md'
+      - 'handover/**'
+      - '.gitignore'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+# 同一分支的重复运行自动取消，节省 CI 额度
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # ---------- 1. 取代码 ----------
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # ---------- 2. 装 JDK ----------
+      # Loom 1.18.2 要求 JVM >= 25，因此必须装 25。
+      - name: 安装 JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      # ---------- 3. 装 Gradle ----------
+      # 用 gradle/actions 而不是 gradlew：
+      # 本项目没有提交 wrapper（构建产物都在 .gitignore 里），
+      # 由 action 自动提供指定版本的 Gradle。
+      - name: 安装 Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.7.1'
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      # ---------- 4. 构建主 mod ----------
+      - name: 构建 nfhandshake
+        run: gradle build -x test --no-daemon --stacktrace
+
+      # ---------- 5. 构建 mcpmod ----------
+      # mcpmod 是独立工程（有自己的 settings.gradle），需要单独构建。
+      - name: 构建 mcpmod
+        working-directory: mcpmod
+        run: gradle build -x test --no-daemon --stacktrace
+
+      # ---------- 6. 收集产物 ----------
+      # 只取 remap 后的正式 jar，排除 sources/javadoc 等。
+      - name: 收集构建产物
+        run: |
+          mkdir -p dist
+          cp build/libs/nfhandshake-*.jar dist/ 2>/dev/null || true
+          cp mcpmod/build/libs/mcpmod-*.jar dist/ 2>/dev/null || true
+          # 去掉 sources jar（体积大且用户不需要）
+          rm -f dist/*-sources.jar
+          echo "=== 产物清单 ==="
+          ls -lh dist/
+
+      # ---------- 7. 上传产物 ----------
+      # 构建完成后可在该次运行的页面底部下载。
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: mods-jar
+          path: dist/*.jar
+          if-no-files-found: error
+          retention-days: 90

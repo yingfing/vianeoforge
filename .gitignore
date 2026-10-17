@@ -1,0 +1,98 @@
+# ============================================================
+# .gitignore —— 绝不提交隐私内容与体积大的中间产物
+# ============================================================
+
+# ---------- 【最重要】隐私内容：一律不进版本库 ----------
+# 真实配置（含服务器地址、密码、账号）
+**/nfhandshake.properties
+**/nfhandshake-channels.json
+**/mcpmod.properties
+!**/nfhandshake.properties.example
+!**/nfhandshake-channels.example.json
+
+# 任何可能的密钥 / 凭据
+*.pem
+*.key
+*.p12
+*.jks
+id_rsa*
+id_ed25519*
+*credentials*
+*secret*
+.token
+
+# 备份文件（常含真实配置）
+*.bak
+*.bak-*
+*.bak2
+*.old
+
+# 测试端的运行时数据（含登录态、服务器列表）
+stage/miniclient/
+stage/nftest-logs/
+*.log
+
+# ---------- 构建产物 ----------
+build/
+.gradle/
+run/
+out/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---------- 依赖与工具（体积大，可复现） ----------
+node_modules/
+.pnpm-store/
+tools/
+bot/node_modules/
+bot/npm/
+bot/npm2/
+bot/*.tgz
+bot/registry_dump/
+
+# ---------- 第三方参考材料（体积大且有版权） ----------
+# 本项目逆向 NeoForge 时用到的中间材料，不适合随源码分发
+ref/
+need/
+mcc/
+
+# ---------- 逆向得到的原始数据（体积大，且可能含服务器信息） ----------
+handover/*.bin
+bot/*.bin
+bot/failure_*.json
+bot/*_result.json
+bot/learned*.json
+handover/neoforge_channels-从jar移出.json
+
+# ---------- 开发期辅助脚本：含真实服务器地址与密码 ----------
+# 这些是开发过程中用的机器人/测试脚本与启动脚本，
+# 里面写死了真实服务器地址、账号、密码、本机绝对路径，一律不进版本库。
+bot/
+stage/
+runclient.bat
+MinecraftClient.ini
+*.ini
+*.bat
+*.vbs
+*.ps1
+
+# ---------- 开发期文档：含真实服务器地址/账号/本机路径 ----------
+README-实现说明与协议证据.md
+README-*.md
+Fabric开发环境-工具清单.md
+
+# handover 下只发布经过脱敏的汇总文档，其余开发记录一律排除。
+handover/*
+!handover/TECHNICAL-NOTES.md
+
+# ---------- 编辑器 / 系统 ----------
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---------- 其它 ----------
+*.tmp
+*.log.*

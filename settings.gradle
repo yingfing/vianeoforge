@@ -1,0 +1,14 @@
+pluginManagement {
+	repositories {
+		// 官方源优先（GitHub Actions 等海外环境可达且更快）
+		maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+		gradlePluginPortal()
+		mavenCentral()
+		// 国内镜像兜底：方便在国内网络环境下构建
+		// （部分网络无法直连 plugins.gradle.org / maven.fabricmc.net）
+		maven { name = 'AliyunGradlePlugin'; url = 'https://maven.aliyun.com/repository/gradle-plugin' }
+		maven { name = 'AliyunPublic'; url = 'https://maven.aliyun.com/repository/public' }
+	}
+}
+
+rootProject.name = 'nfhandshake'

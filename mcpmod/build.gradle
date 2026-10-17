@@ -1,0 +1,41 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+version = project.version
+group = project.group
+base { archivesName = project.archives_base_name }
+
+repositories {
+	maven { name = 'AliyunPublic'; url = 'https://maven.aliyun.com/repository/public' }
+	maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+	mavenCentral()
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// 只用 JDK 自带的 com.sun.net.httpserver 做命令通道 —— 不引入任何第三方依赖，
+	// 因为在 3.6GB 内存的机器上，任何额外的依赖/JVM 进程都可能把客户端挤爆。
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
