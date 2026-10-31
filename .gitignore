@@ -97,3 +97,11 @@ Thumbs.db
 # ---------- 鍏跺畠 ----------
 *.tmp
 *.log.*
+
+# 密钥/token 目录，永不提交
+.secrets/
+*.key
+*.pem
+*credential*
+*xdpool*
+
